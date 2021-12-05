@@ -4,29 +4,49 @@
 .heading {
   font-size: 20px;
 }
+
+#Compiler {
+  color: white;
+  background: rgb(41, 40, 40);
+  height: 100vh;
+}
+#text {
+  text-align: center;
+}
+.row {
+  justify-content: center;
+}
 #source {
+  color: white;
   width: 100% !important;
-  background: #cccccc52;
-  height: 50vh;
+  background: #464444;
+  height: 80vh;
   font-size: 15px;
   resize: vertical;
 }
 #input {
-  background: #cccccc52;
-  width: 45.6%;
-  height: 17vh;
+  color: white;
+  background: #464444;
+  width: 100%;
+  height: 10vh;
   resize: vertical;
   font-size: 17px;
 }
 #output {
-  background: #cccccc52;
-  width: 50%;
-  height: 100%;
-  position: fixed;
-  top: 7.6%;
+  color: white;
+  background: #464444;
+  height: 20vh;
+  width: 100%;
+  top: 5%;
   font-size: 18px;
-  right: 0;
+  right: 5%;
   resize: none;
+}
+.col-5 {
+  margin-left: px;
+}
+.ml-5 {
+  margin-bottom: 50px;
 }
 .language {
   width: 150px;

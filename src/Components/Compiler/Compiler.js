@@ -39,19 +39,19 @@ export default class Compiler extends Component {
     outputText.innerHTML = "";
     outputText.innerHTML += "Creating Submission ...\n";
     const response = await fetch(
-      "https://judge0-ce.p.rapidapi.com/submissions",
+      "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&fields=*",
       {
         method: "POST",
         headers: {
           "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-          "x-rapidapi-key": "", 
+          "x-rapidapi-key": "f59f5c52bbmsh99fdbe99ea3ddc2p129894jsne8bc5b9e89f2", 
           "content-type": "application/json",
           accept: "application/json",
         },
         body: JSON.stringify({
-          source_code: this.state.input,
-          stdin: this.state.user_input,
-          language_id: this.state.language_id,
+          source_code: Buffer.from(this.state.input).toString('base64'),
+          stdin: Buffer.from(this.state.user_input).toString('base64'),
+          language_id: parseInt(this.state.language_id),
         }),
       }
     );
@@ -71,13 +71,13 @@ export default class Compiler extends Component {
     ) {
       outputText.innerHTML = `Creating Submission ... \nSubmission Created ...\nChecking Submission Status\nstatus : ${jsonGetSolution.status.description}`;
       if (jsonResponse.token) {
-        let url = `https://judge0-ce.p.rapidapi.com/submissions/${jsonResponse.token}?base64_encoded=true`;
+        let url = `https://judge0-ce.p.rapidapi.com/submissions/${jsonResponse.token}?base64_encoded=true&fields=*`;
 
         const getSolution = await fetch(url, {
           method: "GET",
           headers: {
             "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-            "x-rapidapi-key": "", 
+            "x-rapidapi-key": "f59f5c52bbmsh99fdbe99ea3ddc2p129894jsne8bc5b9e89f2", 
             "content-type": "application/json",
           },
         });
@@ -86,19 +86,19 @@ export default class Compiler extends Component {
       }
     }
     if (jsonGetSolution.stdout) {
-      const output = atob(jsonGetSolution.stdout);
+      const output = Buffer.from(jsonGetSolution.stdout, 'base64').toString('ascii');
 
       outputText.innerHTML = "";
 
       outputText.innerHTML += `Results :\n${output}\nExecution Time : ${jsonGetSolution.time} Secs\nMemory used : ${jsonGetSolution.memory} bytes`;
     } else if (jsonGetSolution.stderr) {
-      const error = atob(jsonGetSolution.stderr);
+      const error = Buffer.from(jsonGetSolution.stderr, 'base64').toString('ascii');
 
       outputText.innerHTML = "";
 
       outputText.innerHTML += `\n Error :${error}`;
     } else {
-      const compilation_error = atob(jsonGetSolution.compile_output);
+      const compilation_error = Buffer.from(jsonGetSolution.compile_output, 'base64').toString('ascii');
 
       outputText.innerHTML = "";
 
@@ -108,9 +108,10 @@ export default class Compiler extends Component {
   render() {
  
     return (
-      <>
+      <div id="Compiler">
+        <h1 id='text'>Online IDE</h1>
         <div className="row container-fluid">
-          <div className="col-6 ml-4 ">
+          <div className="ml-4 ">
             <label htmlFor="solution ">
               <span className="badge badge-info heading mt-2 ">
                 <i className="fas fa-code fa-fw fa-lg"></i> Code Here
@@ -148,8 +149,16 @@ export default class Compiler extends Component {
               <option value="71">Python</option>
             </select>
           </div>
+         
           <div className="col-5">
-            <div>
+            <div className="mt-2 ml-5">
+              <span className="badge badge-primary heading my-2 ">
+                <i className="fas fa-user fa-fw fa-md"></i> User Input
+              </span>
+              <br />
+              <textarea id="input" onChange={this.userInput}></textarea>
+            </div>
+            <div className="mt-2 ml-5">
               <span className="badge badge-info heading my-2 ">
                 <i className="fas fa-exclamation fa-fw fa-md"></i> Output
               </span>
@@ -158,14 +167,8 @@ export default class Compiler extends Component {
           </div>
         </div>
 
-        <div className="mt-2 ml-5">
-          <span className="badge badge-primary heading my-2 ">
-            <i className="fas fa-user fa-fw fa-md"></i> User Input
-          </span>
-          <br />
-          <textarea id="input" onChange={this.userInput}></textarea>
-        </div>
-      </>
+        
+      </div>
     );
   }
 }
